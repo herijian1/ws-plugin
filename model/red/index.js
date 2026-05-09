@@ -164,7 +164,7 @@ export const redAdapter = new class RedAdapter {
 
 if (Version.isTrss) {
     Bot.adapter.push(redAdapter)
-    Bot.express.get('/ws-plugin*', createHttp)
+    Bot.express.get('/ws-plugin*splat', createHttp)
 } else {
     const getGroupMemberInfo = Bot.getGroupMemberInfo
     /** 劫持修改getGroupMemberInfo方法 */
@@ -196,7 +196,7 @@ if (Version.isTrss) {
     }
     const _express = express();
     const server = http.createServer(_express);
-    _express.get('/ws-plugin*', createHttp)
+    _express.get('/ws-plugin*splat', createHttp)
     setTimeout(() => {
         server.listen(Config.wsPort, () => {
             const host = 'localhost'
