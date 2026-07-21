@@ -51,6 +51,13 @@ onlyReplyAt:
 # maxReconnectAttempts: 最大连接次数 0 为无限制
 # accessToken: 鉴权token
 # accessKey: 鉴权token的前缀 比如Bearer 默认为Token
+# 自动重连
+# enable: 是否开启
+# interval: 每隔多少小时自动断开重连，0为关闭
+autoReconnect:
+  enable: false
+  interval: 6
+
 servers:
   - name: ws_name
     address: ws_address

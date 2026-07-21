@@ -108,6 +108,18 @@ class Config {
     return this.getDefOrConfig('ws-config').servers
   }
 
+  /** 自动重连是否开启 */
+  get autoReconnectEnable () {
+    const cfg = this.getDefOrConfig('ws-config')
+    return cfg.autoReconnect?.enable || false
+  }
+
+  /** 自动重连间隔(小时) */
+  get autoReconnectInterval () {
+    const cfg = this.getDefOrConfig('ws-config')
+    return cfg.autoReconnect?.interval || 6
+  }
+
   get noMsgStart () {
     return this.getDefOrConfig('msg-config').noMsgStart
   }

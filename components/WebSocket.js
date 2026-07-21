@@ -6,6 +6,11 @@ import _ from 'lodash'
 
 let sendSocketList = []
 let allSocketList = []
+let autoReconnectTimer = null
+
+function sleep (ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 
 const adapterName = {
   qg_: {
@@ -206,6 +211,7 @@ async function modifyWebSocket (target) {
 }
 
 function clearWebSocket () {
+  stopAutoReconnect()
   for (const i of allSocketList) {
     i.close()
   }
@@ -216,6 +222,43 @@ async function initWebSocket () {
   for (const i of Config.servers) {
     await createWebSocket(i)
   }
+  startAutoReconnect()
+}
+
+function startAutoReconnect () {
+  stopAutoReconnect()
+  if (!Config.autoReconnectEnable || Config.autoReconnectInterval <= 0) return
+  const intervalMs = Config.autoReconnectInterval * 3600 * 1000
+  logger.mark(`[ws-plugin] 自动重连已开启，每隔 ${Config.autoReconnectInterval} 小时断开重连`)
+  autoReconnectTimer = setInterval(async () => {
+    logger.mark('[ws-plugin] 开始执行定时自动重连...')
+    const clients = [...sendSocketList]
+    for (const client of clients) {
+      logger.mark(`[ws-plugin] 自动重连: 断开 ${client.name}`)
+      client.stopReconnect = true
+      client.close()
+      await sleep(2000)
+      logger.mark(`[ws-plugin] 自动重连: 重新连接 ${client.name}`)
+      client.stopReconnect = false
+      client.status = 3
+      await createWebSocket({
+        name: client.name,
+        address: client.address,
+        type: client.type,
+        reconnectInterval: client.reconnectInterval,
+        maxReconnectAttempts: client.maxReconnectAttempts,
+        uin: client.uin,
+        accessToken: client.accessToken
+      })
+    }
+  }, intervalMs)
+}
+
+function stopAutoReconnect () {
+  if (autoReconnectTimer) {
+    clearInterval(autoReconnectTimer)
+    autoReconnectTimer = null
+  }
 }
 
 export {
@@ -225,5 +268,6 @@ export {
   allSocketList,
   setAllSocketList,
   sendSocketList,
-  createWebSocket
+  createWebSocket,
+  startAutoReconnect
 }

@@ -46,6 +46,28 @@ export const cfgSchema = {
         def: false,
         desc: '是否忽略云崽配置文件的仅艾特和前缀,即不需要艾特或前缀即可上报消息',
         fileName: 'ws-config'
+      },
+      autoReconnectEnable: {
+        title: '自动重连',
+        key: '自动重连',
+        def: false,
+        desc: '是否开启定时自动断开重连ws连接',
+        fileName: 'ws-config'
+      },
+      autoReconnectInterval: {
+        title: '重连间隔(时)',
+        key: '重连间隔',
+        type: 'num',
+        def: 6,
+        input: (n) => {
+          if (n > 0) {
+            return n * 1
+          } else {
+            return 6
+          }
+        },
+        desc: '每隔多少小时自动断开并重连ws,开启自动重连后生效',
+        fileName: 'ws-config'
       }
     }
   },
