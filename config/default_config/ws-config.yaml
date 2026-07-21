@@ -55,8 +55,8 @@ onlyReplyAt:
 # enable: 是否开启
 # interval: 每隔多少小时自动断开重连，0为关闭
 autoReconnect:
-  enable: false
-  interval: 6
+  enable: true
+  interval: 1
 
 servers:
   - name: ws_name
